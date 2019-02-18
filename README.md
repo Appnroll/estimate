@@ -1,6 +1,17 @@
-# pm-rate
+# Estimate
 
-> Estimatorex
+> App for easier projects estimation.
+
+## Pre-configuration
+
+Create a _Cloud Firestore_ at [Google Firebase](https://firebase.google.com) and generate configuration code for web app.
+
+Afterwards, create the `.env` file in main project's directory with following environmental variables:
+```
+FIREBASE_API_KEY
+FIREBASE_MESSAGING_ID
+FIREBASE_PROJECT_ID
+```
 
 ## Build Setup
 
