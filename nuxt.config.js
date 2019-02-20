@@ -16,11 +16,11 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/css/uikit.min.css' }
+      // { rel: 'stylesheet', href: 'https://unpkg.com/element-ui/lib/theme-chalk/index.css' }
     ],
     script: [
-      { src: 'https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit.min.js' },
-      { src: 'https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js' }
+      // { src: 'https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit.min.js' },
+      // { src: 'https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js' }
     ]
   },
 
@@ -40,7 +40,8 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/vee-validate'
+    '~/plugins/vee-validate',
+    '~/mixins/global'
   ],
 
   /*
@@ -54,7 +55,15 @@ module.exports = {
   ** Axios module configuration
   */
   axios: {
-    // See https://github.com/nuxt-community/axios-module#options
+    proxy: true,
+    retry: { retries: 3 }
+  },
+
+  proxy: {
+    '/slack/': {
+      target: 'https://slack.com/api/',
+      pathRewrite: { '^/slack/': '' }
+    }
   },
 
   /*
@@ -64,6 +73,7 @@ module.exports = {
     /*
     ** You can extend webpack config here
     */
+    watch: ['api', 'server'],
     extend (config, ctx) {
 
     },

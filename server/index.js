@@ -1,7 +1,9 @@
 const express = require('express')
 const consola = require('consola')
+const bodyParser = require('body-parser')
 const { Nuxt, Builder } = require('nuxt')
 const app = express()
+const apiRoutes = require('../api')
 
 // Import and Set Nuxt.js options
 let config = require('../nuxt.config.js')
@@ -21,6 +23,10 @@ async function start() {
     const builder = new Builder(nuxt)
     await builder.build()
   }
+
+  // Add api folder to express
+  app.use(bodyParser.json())
+  app.use('/api', apiRoutes)
 
   // Give nuxt middleware to express
   app.use(nuxt.render)

@@ -28,30 +28,22 @@
 </template>
 
 <script>
-  import refs from '~/services/firebase'
   import { mapGetters, mapActions } from 'vuex'
 
   export default {
     name: 'projectsList',
-    data: () => ({
-      dataSources: {
-        projects: null
-      }
-    }),
     computed: {
-      ...mapGetters([
-        'projects'
-      ])
+      ...mapGetters({
+        projects: 'projects/get'
+      })
     },
     methods: {
-      ...mapActions([
-        'setProjectsRef'
-      ])
+      ...mapActions({
+        setProjectsRef: 'projects/setRef'
+      })
     },
     created () {
-      this.dataSources.projects = refs.projectsRef
-      // this.setProjectsRef(refs.projectsRef)
-      this.$store.dispatch('setProjectsRef', this.dataSources.projects)
+      this.setProjectsRef(this.fbRefs.projectsRef)
     }
   }
 </script>

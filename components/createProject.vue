@@ -42,10 +42,20 @@
             <div class="uk-margin">
               <label class="uk-form-label"><strong>Team members</strong></label>
               <div class="uk-form-controls">
+                <div class="uk-grid-small uk-width-1-1" uk-grid>
+                  <div class="uk-flex uk-flex-1">
+                    <app-search class="uk-width-1-1" @accept="addMember()" placeholder="Type user name, email or slack nick" type="text" v-model="search">
+                      <li v-for="user in filteredUsers">
+                        <img :alt="user.profile.real_name" :src="user.profile.image_72" class="uk-comment-avatar" height="30" width="30">
+                        <span>{{ user.profile.real_name }}</span>
+                      </li>
+                    </app-search>
+                  </div>
+                </div>
                 <div class="uk-grid-small uk-flex-between uk-flex-middle" uk-grid>
                   <div class="uk-width-1-1 uk-flex uk-flex-between uk-flex-middle" v-for="(member, i) in form.team">
                     <div class="uk-flex uk-flex-1">
-                      <input :ref="'member-' + i" @keydown.enter.prevent="addMember" class="uk-input" placeholder="Member name" type="text" v-model="form.team[i].name">
+                      <input :ref="'member-' + i" class="uk-input" placeholder="Member name" type="text" v-model="form.team[i].name">
                       <div class="uk-inline uk-margin-small-left">
                         <button :disabled="!isAddedEstimationType" :style="{pointerEvents: isAddedEstimationType ? 'all' : 'none'}" class="uk-button uk-width-1-1 uk-button-default uk-text-nowrap" type="button">Estimation types</button>
                         <div uk-dropdown="mode: click">
@@ -82,10 +92,12 @@
 
 <script>
   import marked from 'marked'
-  import refs from '~/services/firebase'
+  import { mapGetters, mapActions } from 'vuex'
+  import AppSearch from '~/components/inputs/appSearch'
 
   export default {
     name: 'createProject',
+    components: { AppSearch },
     data: () => ({
       descriptionPreview: false,
       formDefaults: {
@@ -94,6 +106,7 @@
         },
         member: {
           name: '',
+          id: '',
           estimationTypes: []
         }
       },
@@ -103,9 +116,19 @@
         managementFee: '',
         estimationTypes: [],
         team: []
-      }
+      },
+      search: ''
     }),
     computed: {
+      ...mapGetters({
+        users: 'users/get'
+      }),
+      filteredUsers () {
+        const search = this.search
+        return this.users.filter(user => {
+          return user.name.includes(search) || user.profile.real_name.includes(search) || user.profile.email.includes(search)
+        })
+      },
       isAddedEstimationType () {
         return this.form.estimationTypes[0].name.length > 0
       },
@@ -124,7 +147,18 @@
         ...this.formDefaults.estimationType
       })
     },
+    mounted () {
+      if (!this.users.length) {
+        this.fetchUsers()
+      }
+    },
     methods: {
+      ...mapActions({
+        fetchUsers: 'users/fetch'
+      }),
+      searchUpdate (value) {
+        this.search = value
+      },
       addMember () {
         const team = this.form.team
         if (team[team.length - 1].name.length > 0) {
@@ -167,7 +201,7 @@
         const isValid = await this.validate()
         if (isValid) {
           UIkit.modal('#create-project-modal').hide()
-          refs.projectsRef.add(this.form)
+          this.fbRefs.projectsRef.add(this.form)
           this.cancel()
         }
         // UIkit.modal('#create-project-modal').hide()
