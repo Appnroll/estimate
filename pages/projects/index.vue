@@ -1,6 +1,7 @@
 <template>
   <el-col :span="24">
     <app-projects-list/>
+    <app-projects-create/>
   </el-col>
 </template>
 
@@ -11,10 +12,11 @@
   // import refs from '~/services/firebase'
 
   import AppProjectsList from '~/components/forms/projects/list'
+  import AppProjectsCreate from '~/components/forms/projects/create'
 
   export default {
     name: 'Projects',
-    components: { AppProjectsList },
+    components: { AppProjectsCreate, AppProjectsList },
     created () {
       // this.$store.dispatch('setProjectsRef', refs.projectsRef)
       // this.source = api.projectsRef

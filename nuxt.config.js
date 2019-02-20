@@ -37,6 +37,7 @@ module.exports = {
   */
   plugins: [
     '@/plugins/element-ui',
+    '~/plugins/vue-markdown',
     '~/mixins/global'
   ],
 

@@ -1,7 +1,7 @@
 {
   "name": "estimate-app",
   "version": "0.1.0",
-  "description": "App for easier projects estimating",
+  "description": "App for easier projects estimations",
   "author": "App'n'roll <appnroll.com>",
   "private": true,
   "scripts": {
@@ -20,6 +20,7 @@
     "node-sass": "^4.11.0",
     "nuxt": "^2.4.0",
     "sass-loader": "^7.1.0",
+    "vue-markdown": "^2.2.4",
     "vuexfire": "^3.0.0-alpha.14"
   },
   "devDependencies": {

@@ -1,10 +1,16 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:300,400,400i,600');
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500');
 @import url('https://fonts.googleapis.com/css?family=Material+Icons');
 
 body {
   margin: 0;
-  font-weight: 300;
-  font-family: 'Poppins', sans-serif;
+}
+
+* {
+  font-family: 'Ubuntu', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
 }
 
 #__layout {
@@ -40,6 +46,7 @@ body {
   font-feature-settings: 'liga';
 }
 
+.icon.md-14 { font-size: 14px; }
 .icon.md-18 { font-size: 18px; }
 .icon.md-24 { font-size: 24px; }
 .icon.md-36 { font-size: 36px; }
@@ -52,3 +59,23 @@ body {
 /* Rules for using icons as white on a dark background. */
 .icon.md-light { color: rgba(255, 255, 255, 1); }
 .icon.md-light.md-inactive { color: rgba(255, 255, 255, 0.3); }
+
+.icon.no-space {
+  margin-right: 0;
+}
+
+.el-button {
+  font-weight: 500;
+  .icon {
+    font-size: 24px;
+    line-height: 14px;
+    vertical-align: top;
+    margin: 0 .1em 0 -.5em;
+  }
+  &--mini, &--small {
+    .icon {
+      margin-right: 0;
+      line-height: 12px;
+    }
+  }
+}
