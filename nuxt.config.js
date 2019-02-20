@@ -15,12 +15,7 @@ module.exports = {
       { hid: 'description', name: 'description', content: pkg.description }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: 'https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/css/uikit.min.css' }
-    ],
-    script: [
-      { src: 'https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit.min.js' },
-      { src: 'https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
     ]
   },
 
@@ -33,6 +28,7 @@ module.exports = {
   ** Global CSS
   */
   css: [
+    'element-ui/lib/theme-chalk/index.css',
     '~/assets/styles/global.scss'
   ],
 
@@ -40,7 +36,8 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/vee-validate'
+    '@/plugins/element-ui',
+    '~/mixins/global'
   ],
 
   /*
@@ -54,18 +51,29 @@ module.exports = {
   ** Axios module configuration
   */
   axios: {
-    // See https://github.com/nuxt-community/axios-module#options
+    proxy: true,
+    retry: { retries: 3 }
+  },
+
+  proxy: {
+    '/slack/': {
+      target: 'https://slack.com/api/',
+      pathRewrite: { '^/slack/': '' }
+    }
   },
 
   /*
   ** Build configuration
   */
   build: {
+    watch: ['api', 'server'],
+    transpile: [/^element-ui/],
+    
     /*
     ** You can extend webpack config here
     */
-    extend (config, ctx) {
-
+    extend(config, ctx) {
+      
     },
     plugins: [
       new Dotenv()

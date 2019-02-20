@@ -1,22 +1,16 @@
 import Vuex from 'vuex'
+import projects from './modules/projects'
+import users from './modules/users'
 import { firebaseMutations } from 'vuexfire'
-import { firebaseAction } from 'vuexfire'
 
 const store = () => {
   return new Vuex.Store({
-    state: {
-      projects: []
-    },
-    getters: {
-      projects: state => state.projects
-    },
     mutations: {
       ...firebaseMutations
     },
-    actions: {
-      setProjectsRef: firebaseAction(({ bindFirebaseRef }, ref) => {
-        bindFirebaseRef('projects', ref)
-      })
+    modules: {
+      projects,
+      users
     }
   })
 }
