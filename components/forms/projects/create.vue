@@ -24,16 +24,56 @@
         </el-form-item>
         <el-form-item label="Estimation types">
           <el-col :span="24">
-            <!--<p v-for="type in formData.estimationTypes">{{ type.value }}</p>-->
-
-            <el-select class="estimation-types" v-model="formData.estimationTypes" multiple filterable allow-create default-first-option placeholder="Choose types or create a new ones">
+            <el-select allow-create class="full-width" default-first-option filterable multiple placeholder="Choose needed types or create a new one" v-model="formData.estimationTypes">
               <el-option
-                v-for="item in estimationTypes"
                 :key="item.value"
                 :label="item.value"
-                :value="item.value">
+                :value="item.value"
+                v-for="item in estimationTypes">
               </el-option>
             </el-select>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="Team members">
+          <el-col :span="24">
+            <el-row :gutter="20" :key="member.id" align="middle" type="flex" v-for="(member, i) in formData.team">
+              <el-col :span="10">
+                <el-row align="middle" class="team-member" type="flex">
+                  <img :alt="member.profile.real_name" :src="member.profile.image_72">
+                  <span>{{ member.profile.real_name }}</span>
+                </el-row>
+              </el-col>
+              <el-col class="flex-1" :span="10">
+                <el-select class="full-width" multiple placeholder="Choose available estimation types" v-model="formData.team[i].estimationTypes">
+                  <el-option
+                    :key="type"
+                    :label="type"
+                    :value="type"
+                    v-for="type in formData.estimationTypes">
+                  </el-option>
+                </el-select>
+              </el-col>
+              <el-col class="auto-width" :span="4">
+                <el-button
+                  @click="deleteTeamMember(i)"
+                  type="danger">Delete
+                </el-button>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="10">
+                <el-select :filter-method="teamMembersFilter" @change="addTeamMember" class="full-width" filterable placeholder="Search and add a new member" v-model="teamMemberSearch" value-key="id">
+                  <el-option
+                    :key="user.id"
+                    :label="user.profile.real_name"
+                    :value="user"
+                    v-for="user in filteredTeamMembers"
+                    v-if="addedTeamMembersIds.indexOf(user.id) < 0">
+                  </el-option>
+                </el-select>
+              </el-col>
+            </el-row>
 
             <!--<el-autocomplete :fetch-suggestions="querySearch" @select="addEstimationType" placeholder="Please Input" v-model="estimationTypeSearch"></el-autocomplete>-->
             <!--<el-select placeholder="Please select a zone" v-model="form.region">-->
@@ -52,6 +92,7 @@
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex'
   import VueMarkdown from 'vue-markdown'
 
   export default {
@@ -74,11 +115,15 @@
           }
         ],
         estimationTypeSearch: '',
+        teamMemberSearch: '',
+        filteredTeamMembers: [],
+        addedTeamMembersIds: [],
         formData: {
           name: '',
           shortDescription: '',
           managementFee: '',
-          estimationTypes: []
+          estimationTypes: [],
+          team: []
         },
         formRules: {},
         form: {
@@ -95,25 +140,45 @@
       }
     },
     mounted () {
-
+    },
+    computed: {
+      ...mapGetters({
+        users: 'users/get'
+      })
     },
     methods: {
-      querySearch (queryString, cb) {
-        const estimationTypes = this.estimationTypes
-        const results = queryString ? estimationTypes.filter(this.createFilter(queryString)) : estimationTypes
-        cb(results)
-      },
-      createFilter (queryString) {
-        return (type) => {
-          return (type.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0)
+      ...mapActions({
+        fetchUsers: 'users/fetch'
+      }),
+      async init () {
+        if (!this.users.length) {
+          await this.fetchUsers()
         }
+        this.filteredTeamMembers = this.users
+      },
+      teamMembersFilter (query) {
+        this.filteredTeamMembers = query.length ? this.users.filter(user => {
+          return user.profile.real_name.includes(query) || user.name.includes(query) || user.profile.email.includes(query)
+        }) : this.users
       },
       addEstimationType (item) {
         this.formData.estimationTypes.push(item)
         this.estimationTypeSearch = ''
       },
+      addTeamMember () {
+        this.formData.team.push({
+          ...this.teamMemberSearch,
+          estimationTypes: []
+        })
+        this.teamMemberSearch = ''
+        this.filteredTeamMembers = this.users
+      },
+      deleteTeamMember (i) {
+        this.formData.team.splice(i, 1)
+      },
       showModal () {
         this.modal = true
+        this.init()
       },
       hideModal () {
         this.modal = false
@@ -124,6 +189,11 @@
       confirm () {
         this.hideModal()
       }
+    },
+    watch: {
+      'formData.team' () {
+        this.addedTeamMembersIds = this.formData.team.map(user => user.id)
+      }
     }
   }
 </script>
@@ -133,7 +203,13 @@
     padding: 10px 0;
   }
 
-  .estimation-types {
-    width: 100%;
+  .team-member {
+    img {
+      width: 36px;
+      border-radius: 50%;
+    }
+    span {
+      margin-left: 1em;
+    }
   }
 </style>
