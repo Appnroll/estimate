@@ -1,28 +1,27 @@
 <template>
   <el-row align="middle" justify="end" type="flex">
-    <el-button @click="showModal()" type="primary">
+    <el-button @click="showModal()" class="new-project-button" type="primary">
       <i class="icon md-24">add</i>New
     </el-button>
     <el-dialog :visible.sync="modal" title="Create new project">
-      <el-form :model="formData" :rules="formRules">
-        <el-form-item label="Project settings">
+      <el-form :model="formData" :rules="formRules" ref="form">
+        <label class="el-form-item__label">Project settings</label>
+        <el-form-item prop="name">
           <el-input autocomplete="off" placeholder="Project name" v-model="formData.name"></el-input>
         </el-form-item>
         <el-form-item>
           <el-input :autosize="{ minRows: 2, maxRows: 8}" placeholder="Short project description" type="textarea" v-model="formData.shortDescription"></el-input>
-          <!--<div>-->
-          <!--<textarea v-model="formData.description"></textarea>-->
-          <!--</div>-->
           <!--<vue-markdown :source="formData.description"></vue-markdown>-->
         </el-form-item>
-        <el-form-item>
+        <el-form-item prop="fee">
           <el-col :span="12">
-            <el-input autocomplete="off" min="0" placeholder="Management fee" step="5" type="number" v-model="formData.managementFee">
+            <el-input autocomplete="off" max="100" min="0" placeholder="Management fee" step="5" type="number" v-model.number="formData.fee">
               <template slot="append">%</template>
             </el-input>
           </el-col>
         </el-form-item>
-        <el-form-item label="Estimation types">
+        <label class="el-form-item__label">Estimation types</label>
+        <el-form-item prop="estimationTypes">
           <el-col :span="24">
             <el-select allow-create class="full-width" default-first-option filterable multiple placeholder="Choose needed types or create a new one" v-model="formData.estimationTypes">
               <el-option
@@ -34,16 +33,25 @@
             </el-select>
           </el-col>
         </el-form-item>
-        <el-form-item label="Team members">
-          <el-col :span="24">
-            <el-row :gutter="20" :key="member.id" align="middle" type="flex" v-for="(member, i) in formData.team">
-              <el-col :span="10">
-                <el-row align="middle" class="team-member" type="flex">
-                  <img :alt="member.profile.real_name" :src="member.profile.image_72">
-                  <span>{{ member.profile.real_name }}</span>
-                </el-row>
-              </el-col>
-              <el-col class="flex-1" :span="10">
+        <label class="el-form-item__label">Team members</label>
+        <el-col :span="24">
+          <el-form-item v-if="!formData.team.length">
+            <el-alert
+              :closable="false"
+              show-icon
+              title="No members selected"
+              type="warning">
+            </el-alert>
+          </el-form-item>
+          <el-row :gutter="12" :key="member.id" align="top" type="flex" v-for="(member, i) in formData.team">
+            <el-col :span="10">
+              <el-row align="middle" class="team-member" type="flex">
+                <img :alt="member.profile.real_name" :src="member.profile.image_72">
+                <span>{{ member.profile.real_name }}</span>
+              </el-row>
+            </el-col>
+            <el-col :span="10" class="flex-1">
+              <el-form-item :prop="'team.' + i + '.estimationTypes'" :rules="formRules.teamEstimationTypes">
                 <el-select class="full-width" multiple placeholder="Choose available estimation types" v-model="formData.team[i].estimationTypes">
                   <el-option
                     :key="type"
@@ -52,36 +60,31 @@
                     v-for="type in formData.estimationTypes">
                   </el-option>
                 </el-select>
-              </el-col>
-              <el-col class="auto-width" :span="4">
-                <el-button
-                  @click="deleteTeamMember(i)"
-                  type="danger">Delete
-                </el-button>
-              </el-col>
-            </el-row>
-
-            <el-row>
-              <el-col :span="10">
-                <el-select :filter-method="teamMembersFilter" @change="addTeamMember" class="full-width" filterable placeholder="Search and add a new member" v-model="teamMemberSearch" value-key="id">
-                  <el-option
-                    :key="user.id"
-                    :label="user.profile.real_name"
-                    :value="user"
-                    v-for="user in filteredTeamMembers"
-                    v-if="addedTeamMembersIds.indexOf(user.id) < 0">
-                  </el-option>
-                </el-select>
-              </el-col>
-            </el-row>
-
-            <!--<el-autocomplete :fetch-suggestions="querySearch" @select="addEstimationType" placeholder="Please Input" v-model="estimationTypeSearch"></el-autocomplete>-->
-            <!--<el-select placeholder="Please select a zone" v-model="form.region">-->
-            <!--<el-option label="Zone No.1" value="shanghai"></el-option>-->
-            <!--<el-option label="Zone No.2" value="beijing"></el-option>-->
-            <!--</el-select>-->
-          </el-col>
-        </el-form-item>
+              </el-form-item>
+            </el-col>
+            <el-col :span="4" class="auto-width">
+              <el-button
+                @click="deleteTeamMember(i)"
+                type="danger">Delete
+              </el-button>
+            </el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item prop="teamMembers">
+            <el-col :span="10">
+              <el-select :filter-method="teamMembersFilter" @change="addTeamMember" class="full-width" filterable placeholder="Search and add a new member" v-model="teamMemberSearch" value-key="id">
+                <el-option
+                  :key="user.id"
+                  :label="user.profile.real_name"
+                  :value="user"
+                  v-for="user in filteredTeamMembers"
+                  v-if="addedTeamMembersIds.indexOf(user.id) < 0">
+                </el-option>
+              </el-select>
+            </el-col>
+          </el-form-item>
+        </el-col>
       </el-form>
       <span class="dialog-footer" slot="footer">
         <el-button @click="cancel()">Cancel</el-button>
@@ -101,6 +104,25 @@
       VueMarkdown
     },
     data () {
+      const memberEstimationTypesValidator = (rule, value, callback) => {
+        const resolve = (path, obj = self, separator = '.') => {
+          const properties = Array.isArray(path) ? path : path.split(separator)
+          return properties.reduce((prev, curr) => prev && prev[curr], obj)
+        }
+        if (!resolve(rule.field, this.formData).length) {
+          callback(new Error('Please select at least one estimation type'))
+        }
+      }
+      const estimationTypesValidator = (rule, value, callback) => {
+        if (!this.formData.estimationTypes.length) {
+          callback(new Error('Please select at least one estimation type'))
+        }
+      }
+      const teamMembersValidator = (rule, value, callback) => {
+        if (!this.formData.team.length) {
+          callback(new Error('Please choose at least one member'))
+        }
+      }
       return {
         modal: false,
         estimationTypes: [
@@ -121,20 +143,30 @@
         formData: {
           name: '',
           shortDescription: '',
-          managementFee: '',
+          fee: '',
           estimationTypes: [],
           team: []
         },
-        formRules: {},
-        form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
+        formRules: {
+          name: [
+            { required: true, message: 'Project name cannot be empty', trigger: 'blur' }
+          ],
+          fee: [
+            { required: true, message: 'Management fee cannot be empty' },
+            { required: true, message: 'Management fee cannot be empty' },
+            { type: 'number', message: 'Management fee must be a decimal number' },
+            { type: 'number', min: 0, message: 'Management fee cannot be negative' },
+            { type: 'number', max: 100, message: 'Management fee is too high' }
+          ],
+          estimationTypes: [
+            { validator: estimationTypesValidator, trigger: 'change' }
+          ],
+          teamMembers: [
+            { validator: teamMembersValidator, trigger: 'change' }
+          ],
+          teamEstimationTypes: [
+            { validator: memberEstimationTypesValidator, trigger: 'change' }
+          ]
         },
         formLabelWidth: '130px'
       }
@@ -158,7 +190,7 @@
       },
       teamMembersFilter (query) {
         this.filteredTeamMembers = query.length ? this.users.filter(user => {
-          return user.profile.real_name.includes(query) || user.name.includes(query) || user.profile.email.includes(query)
+          return user.profile.real_name.includes(query) || user.name.includes(query) || user.profile.email.includes(query) || user.profile.display_name.includes(query)
         }) : this.users
       },
       addEstimationType (item) {
@@ -170,8 +202,10 @@
           ...this.teamMemberSearch,
           estimationTypes: []
         })
-        this.teamMemberSearch = ''
         this.filteredTeamMembers = this.users
+        this.$nextTick(() => {
+          this.teamMemberSearch = ''
+        })
       },
       deleteTeamMember (i) {
         this.formData.team.splice(i, 1)
@@ -182,12 +216,21 @@
       },
       hideModal () {
         this.modal = false
+        this.$refs.form.resetFields()
       },
       cancel () {
         this.hideModal()
       },
       confirm () {
-        this.hideModal()
+        // this.hideModal()
+        this.$refs.form.validate((valid) => {
+          if (valid) {
+            alert('submit!')
+          } else {
+            console.log('error submit!!')
+            return false
+          }
+        })
       }
     },
     watch: {
@@ -199,10 +242,6 @@
 </script>
 
 <style lang="scss" scoped>
-  .el-row {
-    padding: 10px 0;
-  }
-
   .team-member {
     img {
       width: 36px;
@@ -211,5 +250,13 @@
     span {
       margin-left: 1em;
     }
+  }
+
+  .el-alert {
+    height: 40px;
+  }
+
+  .new-project-button {
+    margin-top: 20px;
   }
 </style>

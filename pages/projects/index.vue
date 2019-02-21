@@ -1,5 +1,5 @@
 <template>
-  <el-col :span="24">
+  <el-col>
     <app-projects-list/>
     <app-projects-create/>
   </el-col>
