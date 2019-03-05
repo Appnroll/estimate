@@ -4,7 +4,7 @@
       <i class="icon md-24">add</i>New
     </el-button>
     <el-dialog :visible.sync="modal" title="Create new project">
-      <el-form :model="formData" :rules="formRules" ref="form">
+      <el-form :model="formData" :rules="formRules" @submit.native.prevent ref="form">
         <label class="el-form-item__label">Project settings</label>
         <el-form-item prop="name">
           <el-input autocomplete="off" placeholder="Project name" v-model="formData.name"></el-input>
@@ -112,16 +112,19 @@
         if (!resolve(rule.field, this.formData).length) {
           callback(new Error('Please select at least one estimation type'))
         }
+        callback()
       }
       const estimationTypesValidator = (rule, value, callback) => {
         if (!this.formData.estimationTypes.length) {
           callback(new Error('Please select at least one estimation type'))
         }
+        callback()
       }
       const teamMembersValidator = (rule, value, callback) => {
         if (!this.formData.team.length) {
           callback(new Error('Please choose at least one member'))
         }
+        callback()
       }
       return {
         modal: false,
@@ -153,8 +156,6 @@
           ],
           fee: [
             { required: true, message: 'Management fee cannot be empty' },
-            { required: true, message: 'Management fee cannot be empty' },
-            { type: 'number', message: 'Management fee must be a decimal number' },
             { type: 'number', min: 0, message: 'Management fee cannot be negative' },
             { type: 'number', max: 100, message: 'Management fee is too high' }
           ],
@@ -180,6 +181,7 @@
     },
     methods: {
       ...mapActions({
+        addProject: 'projects/add',
         fetchUsers: 'users/fetch'
       }),
       async init () {
@@ -222,12 +224,12 @@
         this.hideModal()
       },
       confirm () {
-        // this.hideModal()
-        this.$refs.form.validate((valid) => {
+        this.$refs.form.validate(async (valid) => {
           if (valid) {
-            alert('submit!')
+            await this.addProject(this.formData)
+            this.$refs.form.resetFields()
+            this.hideModal()
           } else {
-            console.log('error submit!!')
             return false
           }
         })
