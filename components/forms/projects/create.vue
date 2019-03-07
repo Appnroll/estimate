@@ -88,7 +88,8 @@
       </el-form>
       <span class="dialog-footer" slot="footer">
         <el-button @click="cancel()">Cancel</el-button>
-        <el-button @click="confirm()" type="primary">Confirm</el-button>
+        <el-button @click="update()" type="primary" v-if="project">Update</el-button>
+        <el-button @click="confirm()" type="primary" v-else>Confirm</el-button>
       </span>
     </el-dialog>
   </el-row>
@@ -102,6 +103,12 @@
     name: 'appProjectsCreate',
     components: {
       VueMarkdown
+    },
+    props: {
+      project: {
+        default: null,
+        type: Object
+      }
     },
     data () {
       const memberEstimationTypesValidator = (rule, value, callback) => {
@@ -181,6 +188,7 @@
     },
     methods: {
       ...mapActions({
+        updateProject: 'projects/update',
         addProject: 'projects/add',
         fetchUsers: 'users/fetch'
       }),
@@ -215,20 +223,45 @@
       showModal () {
         this.modal = true
         this.init()
+        if (this.project) {
+          this.formData = {
+            ...this.project
+          }
+        }
       },
       hideModal () {
         this.modal = false
         this.$refs.form.resetFields()
       },
       cancel () {
+        this.close()
+      },
+      close () {
+        this.formData = {
+          name: '',
+          shortDescription: '',
+          fee: '',
+          estimationTypes: [],
+          team: []
+        }
         this.hideModal()
+        this.$emit('close')
       },
       confirm () {
         this.$refs.form.validate(async (valid) => {
           if (valid) {
             await this.addProject(this.formData)
-            this.$refs.form.resetFields()
-            this.hideModal()
+            this.close()
+          } else {
+            return false
+          }
+        })
+      },
+      async update () {
+        this.$refs.form.validate(async (valid) => {
+          if (valid) {
+            await this.updateProject(this.formData)
+            this.close()
           } else {
             return false
           }
@@ -238,6 +271,11 @@
     watch: {
       'formData.team' () {
         this.addedTeamMembersIds = this.formData.team.map(user => user.id)
+      },
+      project () {
+        if (this.project) {
+          this.showModal()
+        }
       }
     }
   }

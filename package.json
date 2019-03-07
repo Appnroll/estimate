@@ -11,25 +11,25 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.3.6",
-    "cross-env": "^5.2.0",
-    "dotenv-webpack": "^1.7.0",
-    "element-ui": "^2.4.11",
-    "express": "^4.16.4",
-    "firebase": "^5.8.3",
-    "node-sass": "^4.11.0",
-    "nuxt": "^2.4.0",
-    "sass-loader": "^7.1.0",
-    "vue-markdown": "^2.2.4",
-    "vuexfire": "^3.0.0-alpha.14"
+    "@nuxtjs/axios": "5.3.6",
+    "cross-env": "5.2.0",
+    "dotenv-webpack": "1.7.0",
+    "element-ui": "2.6.1",
+    "express": "4.16.4",
+    "firebase": "5.8.3",
+    "node-sass": "4.11.0",
+    "nuxt": "2.4.0",
+    "sass-loader": "7.1.0",
+    "vue-markdown": "2.2.4",
+    "vuexfire": "3.0.0-alpha.14"
   },
   "devDependencies": {
-    "dotenv": "^6.2.0",
-    "eslint-config-prettier": "^3.1.0",
+    "dotenv": "6.2.0",
+    "eslint-config-prettier": "3.1.0",
     "eslint-plugin-prettier": "2.6.2",
     "fs": "0.0.1-security",
-    "nodemon": "^1.18.9",
-    "path": "^0.12.7",
+    "nodemon": "1.18.9",
+    "path": "0.12.7",
     "prettier": "1.14.3"
   }
 }

@@ -21,16 +21,18 @@
       label="Team"
       prop="team">
       <template slot-scope="scope">
-        <el-row class="team-avatars" type="flex">
-          <img :alt="member.profile.real_name" :key="member.id" :src="member.profile.image_72" v-for="(member, memberIndex) in scope.row.team" v-if="memberIndex < 5">
+        <el-row align="middle" class="team-avatars" type="flex">
+          <img :alt="member.profile.real_name" :key="member.id" :src="member.profile.image_72" v-for="(member, memberIndex) in scope.row.team" v-if="memberIndex < 4">
+          <span v-if="scope.row.team.length - 4 > 0">&nbsp;+{{ scope.row.team.length - 4 }}</span>
         </el-row>
       </template>
     </el-table-column>
     <el-table-column
-      align="right">
+      align="right"
+      width="300">
       <template slot="header" slot-scope="scope">
         <el-input
-          placeholder="Type to search"
+          placeholder="Type project or member name to search..."
           size="mini"
           v-model="search"/>
       </template>
@@ -84,17 +86,28 @@
         projects: 'projects/get'
       }),
       filteredProjects () {
-        return this.projects.filter(data => !this.search || data.name.toLowerCase().includes(this.search.toLowerCase()))
+        const search = this.search.toLowerCase()
+        return this.projects.filter(project => {
+          const isProjectName = project.name.toLowerCase().includes(search)
+          const isMemberName = project.team.findIndex(member => {
+            const isMemberNick = member.name.toLowerCase().includes(search)
+            const isMemberRealName = member.profile.real_name.toLowerCase().includes(search)
+            return isMemberNick || isMemberRealName
+          })
+          return !this.search || isProjectName || isMemberName > -1
+        })
       }
     },
     methods: {
       ...mapActions({
-        updateProject: 'projects/update',
         deleteProject: 'projects/delete',
         setProjectsRef: 'projects/setRef'
       }),
       async handleEdit (index, row) {
-        await this.updateProject(row)
+        this.$emit('edit', {
+          id: row.id,
+          ...row
+        })
       },
       async handleDelete (index, row) {
         await this.deleteProject(row.id)
