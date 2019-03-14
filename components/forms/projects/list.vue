@@ -11,30 +11,45 @@
     </el-table-column>
     <el-table-column
       label="Description"
-      prop="shortDescription"
-      width="400">
+      prop="shortDescription">
       <template slot-scope="scope">
         <p class="ellipsis">{{ scope.row.shortDescription }}</p>
       </template>
     </el-table-column>
     <el-table-column
       label="Team"
-      prop="team">
+      prop="team"
+      width="135">
       <template slot-scope="scope">
-        <el-row align="middle" class="team-avatars" type="flex">
-          <img :alt="member.profile.real_name" :key="member.id" :src="member.profile.image_72" v-for="(member, memberIndex) in scope.row.team" v-if="memberIndex < 4">
-          <span v-if="scope.row.team.length - 4 > 0">&nbsp;+{{ scope.row.team.length - 4 }}</span>
-        </el-row>
+        <app-members-avatar-list :members="scope.row.team"/>
+      </template>
+    </el-table-column>
+    <el-table-column
+      label="Status"
+      prop="name"
+      width="100">
+      <template slot-scope="scope">
+        <app-project-status :status="scope.row.status"/>
       </template>
     </el-table-column>
     <el-table-column
       align="right"
-      width="300">
+      width="250">
       <template slot="header" slot-scope="scope">
-        <el-input
-          placeholder="Type project or member name to search..."
-          size="mini"
-          v-model="search"/>
+        <el-row align="middle" class="search-box" tag="span" type="flex">
+          <el-input
+            placeholder="Search..."
+            size="mini"
+            v-model="search"/>
+          <el-popover
+            content="You can search project by its name and assigned members (name or Slack nick)"
+            placement="top-start"
+            title="Search options"
+            trigger="hover"
+            width="250">
+            <i class="icon md-18 no-space" slot="reference">help_outline</i>
+          </el-popover>
+        </el-row>
       </template>
       <template slot-scope="scope">
         <el-button
@@ -53,28 +68,14 @@
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
+  import AppProjectStatus from '~/components/custom-elements/appProjectStatus'
+  import AppMembersAvatarList from '~/components/custom-elements/appMembersAvatarList'
 
   export default {
     name: 'appProjectsList',
+    components: { AppMembersAvatarList, AppProjectStatus },
     data () {
       return {
-        tableData: [{
-          date: '2016-05-03',
-          name: 'Tom',
-          address: 'No. 189, Grove St, Los Angeles'
-        }, {
-          date: '2016-05-02',
-          name: 'John',
-          address: 'No. 189, Grove St, Los Angeles'
-        }, {
-          date: '2016-05-04',
-          name: 'Morgan',
-          address: 'No. 189, Grove St, Los Angeles'
-        }, {
-          date: '2016-05-01',
-          name: 'Jessy',
-          address: 'No. 189, Grove St, Los Angeles'
-        }],
         search: ''
       }
     },
@@ -124,13 +125,12 @@
     text-overflow: ellipsis;
   }
 
-  .team-avatars {
-    img {
-      height: 36px;
-      border-radius: 50%;
-      box-shadow: 0 0 0 1.5px #ffffff;
-      &:not(:first-of-type) {
-        margin-left: -18px;
+  .search-box {
+    .el-input {
+      padding: 0;
+      & + span {
+        height: 18px;
+        margin-left: 10px;
       }
     }
   }

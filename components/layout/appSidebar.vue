@@ -6,9 +6,9 @@
           <i class="icon md-light">home</i>
           <span>Home</span>
         </el-menu-item>
-        <el-menu-item index="/projects">
+        <el-menu-item index="/estimations">
           <i class="icon md-light">filter_none</i>
-          <span>Projects</span>
+          <span>Estimations</span>
         </el-menu-item>
       </el-menu>
     </el-col>
