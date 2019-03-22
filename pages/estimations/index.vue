@@ -10,7 +10,7 @@
   import AppProjectsCreate from '~/components/forms/projects/appProjectsCreate'
 
   export default {
-    name: 'Projects',
+    name: 'Estimations',
     components: { AppProjectsCreate, AppProjectsList },
     data: () => ({
       selectedProject: null

@@ -8,6 +8,9 @@
       label="Name"
       prop="name"
       width="200">
+      <template slot-scope="scope">
+        <nuxt-link :to="{name: 'estimations-id', params: { id: scope.row.id }}">{{ scope.row.name }}</nuxt-link>
+      </template>
     </el-table-column>
     <el-table-column
       label="Description"
