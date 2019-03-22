@@ -6,8 +6,8 @@
 </template>
 
 <script>
-  import AppProjectsList from '~/components/forms/projects/list'
-  import AppProjectsCreate from '~/components/forms/projects/create'
+  import AppProjectsList from '~/components/forms/projects/appProjectsList'
+  import AppProjectsCreate from '~/components/forms/projects/appProjectsCreate'
 
   export default {
     name: 'Projects',

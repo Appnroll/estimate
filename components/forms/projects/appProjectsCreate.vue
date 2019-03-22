@@ -4,7 +4,7 @@
       <el-button @click="showModal()" class="new-project-button" type="primary">
         <i class="icon md-24">add</i>New
       </el-button>
-      <el-dialog :visible.sync="modal" class="modal no-success-state" title="Create new project">
+      <el-dialog :visible.sync="modal" @close="close" class="modal no-success-state" title="Create new project">
         <el-form :model="formData" :rules="formRules" @submit.native.prevent ref="form">
           <label class="el-form-item__label">Project settings</label>
           <el-form-item prop="name">
@@ -85,7 +85,7 @@
           </el-col>
         </el-form>
         <span class="dialog-footer" slot="footer">
-        <el-button @click="cancel()">Cancel</el-button>
+        <el-button @click="close()">Cancel</el-button>
         <el-button @click="update()" type="primary" v-if="project">Update</el-button>
         <el-button @click="confirm()" type="primary" v-else>Confirm</el-button>
       </span>
@@ -136,6 +136,7 @@
       }
       return {
         modal: false,
+        isNewProject: false,
         estimationTypes: [
           {
             value: 'Front-end'
@@ -237,9 +238,6 @@
         this.$refs.form.resetFields()
         this.modal = false
       },
-      cancel () {
-        this.close()
-      },
       close () {
         this.formData = {
           ...this.formData,
@@ -277,6 +275,15 @@
       project () {
         if (this.project) {
           this.showModal()
+        } else {
+          this.formData = {
+            name: '',
+            status: '',
+            shortDescription: '',
+            fee: '',
+            estimationTypes: [],
+            team: []
+          }
         }
       }
     }
