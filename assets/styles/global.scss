@@ -1,11 +1,144 @@
-@import url('https://fonts.googleapis.com/css?family=Raleway:100,300,400,500,600,700');
+@import url('https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500');
+@import url('https://fonts.googleapis.com/css?family=Material+Icons');
 
 body {
-  font-family: 'Raleway', sans-serif;
+  margin: 0;
 }
-button {
-  &.c-icon {
-    padding: 0 10px;
-    border-radius: 2px;
+
+* {
+  font-family: 'Ubuntu', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'liga';
+}
+
+#__layout {
+  & > .el-container {
+    min-height: 100vh;
+    max-height: 100vh;
   }
 }
+
+/* MATERIAL ICONS SUPPORT */
+.icon {
+  margin-right: .25em;
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px; /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+.icon.md-14 {
+  font-size: 14px;
+}
+
+.icon.md-18 {
+  font-size: 18px;
+}
+
+.icon.md-24 {
+  font-size: 24px;
+}
+
+.icon.md-36 {
+  font-size: 36px;
+}
+
+.icon.md-48 {
+  font-size: 48px;
+}
+
+/* Rules for using icons as black on a light background. */
+.icon.md-dark {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.icon.md-dark.md-inactive {
+  color: rgba(0, 0, 0, 0.26);
+}
+
+/* Rules for using icons as white on a dark background. */
+.icon.md-light {
+  color: rgba(255, 255, 255, 1);
+}
+
+.icon.md-light.md-inactive {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.icon.no-space {
+  margin-right: 0;
+}
+
+/* CUSTOM HELPER CLASSES */
+
+.full-width {
+  width: 100%;
+}
+
+.auto-width {
+  width: auto;
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+/* ELEMENT UI classes extensions  */
+.el-button {
+  font-weight: 500;
+  .icon {
+    font-size: 24px;
+    line-height: 14px;
+    vertical-align: top;
+    margin: 0 .1em 0 -.5em;
+  }
+  &--mini, &--small {
+    .icon {
+      margin-right: 0;
+      line-height: 12px;
+    }
+  }
+}
+
+.el-dialog {
+  width: 90%;
+  max-width: 1200px;
+}
+
+.el-popover {
+  font-size: 12px;
+  word-break: break-word;
+  &__title {
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+.no-success-state {
+  .el-form-item.is-success {
+    .el-input__inner {
+      border: 1px solid #DCDFE6;
+    }
+  }
+}
+

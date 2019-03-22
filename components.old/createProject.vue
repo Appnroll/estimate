@@ -81,7 +81,7 @@
 </template>
 
 <script>
-  import marked from 'marked'
+  // import marked from 'marked'
   import refs from '~/services/firebase'
 
   export default {
